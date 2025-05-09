@@ -1,20 +1,2 @@
-// ui.js – fonctions de rendu DOM
-export function clear(element){
-    while(element.firstChild) element.removeChild(element.firstChild);
-}
-
-export function createEl(tag, props={}, children=[]){
-    const el = document.createElement(tag);
-    Object.assign(el, props);
-    children.forEach(child=>{
-        if(typeof child === "string") el.appendChild(document.createTextNode(child));
-        else el.appendChild(child);
-    });
-    return el;
-}
-
-export function snackbar(message){
-    const bar = createEl("div",{className:"snackbar"},[message]);
-    document.body.appendChild(bar);
-    setTimeout(()=>bar.remove(),3000);
-}
+export const createButton=(t,cb)=>{const b=document.createElement('button');b.textContent=t;b.className='big';b.onclick=cb;return b;};
+export const snackbar=m=>{const d=document.createElement('div');d.className='card feedback';d.textContent=m;document.getElementById('app').prepend(d);setTimeout(()=>d.remove(),3000);};
