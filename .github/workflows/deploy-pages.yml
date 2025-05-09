@@ -1,0 +1,47 @@
+name: Déployer Mission PhoniX sur GitHub Pages
+
+on:
+  # Chaque push sur main (et exécution manuelle)
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read          # lire le code
+  pages: write            # pousser vers Pages
+  id-token: write         # signer le déploiement OIDC
+
+concurrency:
+  group: "pages"          # annule l’exécution précédente si en cours
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 👉 Si vous ajoutez un script de build plus tard (npm run build),
+      # insérez-le ici. Pour l’instant, on déploie tel quel.
+
+      - name: Configurer Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artefact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          # tout le dépôt (racine) ; sinon remplacez par `dist` ou `build`
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
